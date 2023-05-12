@@ -117,11 +117,18 @@ class MachineLearning:
         f = [0, 40, 100, 300, 1200]
         return tem
 
+    def getHeight(self,temgrid):
+        a=0
+        for y in range(20):
+            if temgrid[y]!=-1:
+                a=y
+        return a
     def calcBump(self,temGrid):
-        prev = max(temGrid[0])
+        prev = self.getHeight(temGrid[0])
         total =0
         for x in range(10):
-            total+=abs(prev- max(temGrid[x]))*2
+            total+=abs((prev- self.getHeight(temGrid[x]))**2)
+            prev = self.getHeight(temGrid[x])
         return total
 
     #main method
@@ -137,14 +144,14 @@ class MachineLearning:
                 for z in range(4):
                     if self.ifPossible(x, y, z):
                         moveScore = self.getScore(x, y, z)
-
                         if moveScore > solPoint:
                             solPoint = moveScore
                             solution = [x, y, z]
-
         if solution  == []:
             self.gameOver()
         else:
+            aa, bb, cc = solution
+            #print(self.getScore(aa, bb, cc))
             self.addPiece(solution[0],solution[1],solution[2])
             self.checkClear()
 

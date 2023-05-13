@@ -10,11 +10,11 @@ count = 100
 def main():
     with open('gene.txt') as f:
         lines = f.readlines()
-        a,b,c,d=map(float,lines)
+        a,b,c,d,e=map(float,lines)
 
     genes = []
     for x in range(count):
-        mainIn = MachineLearning(Weight(a,b,c,d))
+        mainIn = MachineLearning(Weight(a,b,c,d,e))
         genes.append(mainIn)
     while True:
 
@@ -24,6 +24,7 @@ def main():
             results.sort(reverse=True, key=lambda x: x[0])
 
             print(results[0][0],results[0][1].getAll())
+
             s=''
             for x in results[0][1].getAll():
                 s+=str(x)+'\n'
@@ -37,20 +38,22 @@ def main():
             for x in top:
                 mutations.append(x[1])
 
-            newGenes =[[],[],[],[]]
+            newGenes =[[],[],[],[],[]]
             for x in top:
                 x=x[1]
                 newGenes[0].append(x.getScore())
                 newGenes[1].append(x.getHoles())
                 newGenes[2].append(x.getBump())
                 newGenes[3].append(x.getTetrites())
+                newGenes[4].append(x.getHeight())
 
-            for x in range(1000):
+            for x in range(100):
                 a = random.choice(newGenes[0]) * random.uniform(.99, 1.01)
                 b = random.choice(newGenes[1]) * random.uniform(.99, 1.01)
                 c = random.choice(newGenes[2]) * random.uniform(.99, 1.01)
                 d = random.choice(newGenes[3]) * random.uniform(.99, 1.01)
-                w = Weight(a,b,c,d)
+                e = random.choice(newGenes[4]) * random.uniform(.99, 1.01)
+                w = Weight(a,b,c,d,e)
                 mutations.append(w)
 
 

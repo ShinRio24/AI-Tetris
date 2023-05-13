@@ -90,8 +90,16 @@ class MachineLearning:
         score = self.calcClearLines(temGrid)
         tetrites = 4 if (score == 4) else -score
         bump = self.calcBump(temGrid)
+        height = self.getMaxHeight(temGrid)
 
-        return (holes * self.weight.getHoles()) + (score * self.weight.getScore()) + (tetrites * self.weight.getTetrites()) + (bump * self.weight.getBump())
+        return (holes * self.weight.getHoles()) + (score * self.weight.getScore()) + (tetrites * self.weight.getTetrites()) + (bump * self.weight.getBump()) + (height * self.weight.getHeight())
+
+    def getMaxHeight(self, temGrid):
+        a=0
+        for x in range(10):
+            a=max(a,self.getHeight(temGrid[x]))
+        return a
+
 
     def holeCounter(self,temGrid):
         t = 0
@@ -123,6 +131,7 @@ class MachineLearning:
             if temgrid[y]!=-1:
                 a=y
         return a
+
     def calcBump(self,temGrid):
         prev = self.getHeight(temGrid[0])
         total =0

@@ -1,2 +1,0 @@
-# AI Tetris
- ai tetris

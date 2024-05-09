@@ -26,9 +26,9 @@ mainGrid = []
 #score, holes, bump, tetrites
 with open('gene.txt') as f:
     lines = f.readlines()
-    a, b, c, d,e = map(float,lines)
+    a, b, c, d = map(float,lines)
 
-tempWeight = Weight(a,b,c,d,e)
+tempWeight = Weight(a,b,c,d)
 instance = MachineLearning(tempWeight)
 
 def update():
@@ -71,7 +71,7 @@ def view():
     run = instance.isRun()
     clock = pygame.time.Clock()
     pygame.key.set_repeat(500, 100)
-    FPS = 10
+    FPS = 5
     while run:
         clock.tick(FPS)
         sideText = 'Hi'

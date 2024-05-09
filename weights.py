@@ -1,18 +1,16 @@
 import random
 class Weight:
-    def __init__(self,a,b,c,d,e):
+    def __init__(self,a,b,c,d):
         self.score=a
         self.holes =b
         self.bump =c
         self.tetrites=d
-        self.height=e
 
-    def setWeight(self,a,b,c,d,e):
+    def setWeight(self,a,b,c,d):
         self.score =a
         self.holes = b
         self.bump = c
         self.tetrites = d
-        self.height = e
 
     def mutateScore(self,x):
         self.score*=x
@@ -25,10 +23,6 @@ class Weight:
     def mutateBump(self,x):
         self.bump*=x
         return self. bump
-
-    def mutateHeight(self,x):
-        self.height*=x
-        return self.height
 
     def mutateTetrites(self,x):
         self.tetrites*=x
@@ -46,11 +40,8 @@ class Weight:
     def getTetrites(self):
         return self.tetrites
 
-    def getHeight(self):
-        return self.height
-
     def getAll(self):
-        return [self.score,self.holes,self.bump,self.tetrites,self.height]
+        return [self.score,self.holes,self.bump,self.tetrites]
 
     def setScore(self,x):
         self.score=x
@@ -67,7 +58,3 @@ class Weight:
     def setTetrites(self,x):
         self.tetrites=x
         return self.tetrites
-
-    def setHeight(self,x):
-        self.height=x
-        return self.height

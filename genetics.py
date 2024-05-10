@@ -5,13 +5,16 @@ import time
 import concurrent.futures
 import random
 import copy
+import os
 
 #this is the file that actually makes the moves
 #decides which move needs to be played next
 count = 100
 def main():
     #gets genes
-    with open('gene.txt') as f:
+    current = os.path.dirname(os.path.abspath(__file__))
+    #print(((os.path.join(current, 'gene.txt'))))
+    with open(((os.path.join(current, 'gene.txt')))) as f:
         lines = f.readlines()
         a,b,c,d=map(float,lines)
 
@@ -31,7 +34,9 @@ def main():
             s=''
             for x in results[0][1].getAll():
                 s+=str(x)+'\n'
-            with open('gene.txt', 'w') as f:
+            current = os.path.dirname(os.path.abspath(__file__))
+            #print(((os.path.join(current, 'gene.txt'))))
+            with open(((os.path.join(current, 'gene.txt'))),'w') as f:
                 f.write(s)
 
             mutations = []

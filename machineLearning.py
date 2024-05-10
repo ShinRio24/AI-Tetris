@@ -1,5 +1,7 @@
 import random
 from weights import Weight
+
+#saves all possible rotations of blocks
 rotations = [[
     # blue J peace
     [[-1, 1], [-1, 0], [0, 0], [1, 0]],
@@ -57,10 +59,13 @@ rotations = [[
     ]
 
 ]
+#changes drop rate based on the level you are at (increased drop speed)
 levelDropRate={0:48,1:43,2:38,3:33,4:28,5:23,6:18,7:13,8:8,9:6,10:5,13:4,16:3,19:2,29:1}
 
+#instance of machine learning, instances so that you can run multiple at a time to test for best mutation
 class MachineLearning:
     def __init__(self, w):
+        #all the variables of a instance for tetris, including weights the grid scores rates and what the current piece is
         self.weight = w
         self.grid = [[-1] * 20 for x in range(10)]
         self.score = 0
@@ -70,6 +75,7 @@ class MachineLearning:
         self.piece = random.randint(0, 6)
         self.run = True
 
+    #sets methods to access
     def setWeight(self,a,b,c,d):
         self.weight.setWeight(a,b,c,d)
 
@@ -79,7 +85,7 @@ class MachineLearning:
     def getGrid(self):
         return self.grid
 
-    #returns score of item
+    #returns score of item and calcuates the score
     def getScore(self,x,y,r):
 
         temGrid = [row[:] for row in self.grid]
@@ -93,6 +99,7 @@ class MachineLearning:
 
         return (holes * self.weight.getHoles()) + (score * self.weight.getScore()) + (tetrites * self.weight.getTetrites()) + (bump * self.weight.getBump())
 
+    #calculates hole count
     def holeCounter(self,temGrid):
         t = 0
         for x in range(10):
@@ -105,6 +112,7 @@ class MachineLearning:
 
         return t
 
+    #calculates any lines that are cleared and their derserved score
     def calcClearLines(self,temGrid):
         tem = 0
 
@@ -117,6 +125,7 @@ class MachineLearning:
         f = [0, 40, 100, 300, 1200]
         return tem
 
+    #calculates bumpyness
     def calcBump(self,temGrid):
         prev = max(temGrid[0])
         total =0
@@ -219,6 +228,7 @@ class MachineLearning:
         #print("GAME OVER")
         self.run = False
 
+    #runs actual game
     def runBase(self):
         run = self.isRun()
         while run:

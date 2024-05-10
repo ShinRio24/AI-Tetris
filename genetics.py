@@ -6,18 +6,22 @@ import concurrent.futures
 import random
 import copy
 
+#this is the file that actually makes the moves
+#decides which move needs to be played next
 count = 100
 def main():
+    #gets genes
     with open('gene.txt') as f:
         lines = f.readlines()
         a,b,c,d=map(float,lines)
 
+    #creates machien learning instance
     genes = []
     for x in range(count):
         mainIn = MachineLearning(Weight(a,b,c,d))
         genes.append(mainIn)
     while True:
-
+        #creates threads that run the game and update gene slighly adjusting the genes every instance until they are optimal
         with concurrent.futures.ProcessPoolExecutor() as executor:
             results = list(executor.map(MachineLearning.runBase, genes))
 

@@ -24,7 +24,9 @@ display = pygame.display.set_mode((fieldWidth, fieldHeight))
 mainGrid = []
 
 #score, holes, bump, tetrites
-with open('gene.txt') as f:
+current = os.path.dirname(os.path.abspath(__file__))
+print(((os.path.join(current, 'gene.txt'))))
+with open(((os.path.join(current, 'gene.txt')))) as f:
     lines = f.readlines()
     a, b, c, d = map(float,lines)
 

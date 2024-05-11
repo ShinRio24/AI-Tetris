@@ -153,9 +153,14 @@ class MachineLearning:
 
         if solution  == []:
             self.gameOver()
+            return -1
         else:
+            solution.append(self.piece)
             self.addPiece(solution[0],solution[1],solution[2])
-            self.checkClear()
+            if self.checkClear()==1:
+                return 1
+            else:
+                return solution
 
     # checks for cleared lines
     def checkClear(self):
@@ -178,6 +183,10 @@ class MachineLearning:
         f = [0, 40, 100, 300, 1200]
         self.score += f[tem] * (self.level + 1)
         self.level = self.lines / 10
+        if tem!=0:
+            return 1
+        else:
+            return 0
 
     def isRun(self):
         return self.run

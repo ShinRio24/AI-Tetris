@@ -2,7 +2,6 @@ import pygame
 import os
 import random
 from time import sleep
-from multiprocessing import Process
 from pygame.locals import *
 from machineLearning import MachineLearning
 from weights import Weight

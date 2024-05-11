@@ -181,6 +181,9 @@ class MachineLearning:
 
     def isRun(self):
         return self.run
+    
+    def setRun(self):
+        self.run = -1
 
     def ifPossible(self, x, y, r):
         place = True

@@ -1,6 +1,7 @@
 from machineLearning import MachineLearning
 from weights import Weight
-from multiprocessing import Process
+#from multiprocessing import Process
+import threading
 import time
 import concurrent.futures
 import random
@@ -71,10 +72,14 @@ rotations = [[
 #this is the file that actually makes the moves
 #decides which move needs to be played next
 #screens total that are runnning
-fullWidth=23
-fullHeight=7
+# fullWidth=23
+# fullHeight=7
+# boxSize = 5
+fullWidth=1
+fullHeight=1
+boxSize = 50
+
 count = fullWidth*fullHeight
-boxSize = 5
 fieldWidth, fieldHeight = boxSize + (boxSize*11)*fullWidth, boxSize+(boxSize*21)*fullHeight
 #print(fieldWidth,fieldHeight)
 FPS = 5
@@ -108,36 +113,26 @@ display = pygame.display.set_mode((fieldWidth, fieldHeight))
 counter = count *1
 screenUpdate = queue.Queue()
 
-def dCounter():
-    counter -=1
-def gCounter():
-    return counter
-def rCounter():
-    counter = count
-
 #draws border of the game
 def addBorder():
     for x in range(fullHeight+1):
-        pygame.draw.rect(display, white, (0, 0+(x*boxSize*21), fieldWidth, 5))
+        pygame.draw.rect(display, white, (0, 0+(x*boxSize*21), fieldWidth, boxSize))
     
     for x in range(fullWidth+1):
-        pygame.draw.rect(display, white, (0+(x*boxSize*11),0, 5, fieldHeight))
+        pygame.draw.rect(display, white, (0+(x*boxSize*11),0, boxSize, fieldHeight))
 
-def runNext(game):
-    print(1)
-    if game[0].isRun()==True:
+def runNext(game,ind):
+    if game.isRun()==True:
         
-        tem = game[0].nextMove()
+        tem = game.nextMove()
         #print(tem)
         if tem==-1:
-            game[0].setRun()
-            run-=1
+            pass
         elif tem==1:
-            screenUpdate.put_nowait([0,game[1]])
+            screenUpdate.put_nowait([0,ind])
             #full update the screen
         else:
-            screenUpdate.put_nowait([1,tem,game[1]])
-    dCounter()
+            screenUpdate.put_nowait([1,tem,ind])
 
 
 
@@ -150,6 +145,7 @@ def main():
         a,b,c,d=map(float,lines)
 
     #initializing game
+    pygame.init()
     pygame.font.init()
     pygame.mixer.init()
     pygame.display.set_caption("Tetris AI!")
@@ -166,47 +162,77 @@ def main():
     #draw the borders
     addBorder()
     pygame.display.update()
-    run=count
-
+    pygame.display.flip()
     #creates threads that run the game and update gene slighly adjusting the genes every instance until they are optimal
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(runNext, genes)
-        while run>0:
-            clock.tick(FPS)
-            #print(gCounter())
-            if gCounter() == 0:
-                print(111)
-                rCounter()
-                executor.map(runNext, genes)
-                print((screenUpdate.qsize()))
-                if not screenUpdate.empty():print(screenUpdate.empty(), "dog")
-                while not screenUpdate.empty():
-                    a=screenUpdate.get()
-                    print(a)
-                    if(a[0]==0):
-                        mainGrid = genes[a[1]].getGrid()
-                        for y in range(20):
-                            for x in range(10):
-                                pygame.draw.rect(display, colorID[mainGrid[x][19 - y]],
-                                                (boxSize+((a[1]%fullWidth)*boxSize*11) + (boxSize * x), boxSize+((a[1]//fullWidth)*boxSize*21) + (boxSize * y), boxSize, boxSize))
-                    else:
-                        mainGrid = genes[a[1]].getGrid()
-                        for moves in rotations[a[1][3]][a[1][2]]:
-                            pygame.draw.rect(display, colorID[mainGrid[a[1][0]][19 - a[1][1]]],
-                                (boxSize+((a[1]%fullWidth)*boxSize*11) + (boxSize * a[1][0]+moves[0]), boxSize+((a[1]//fullWidth)*boxSize*21) + (boxSize * a[1][1]+moves[1]), boxSize, boxSize))
-                        
-                    print(10)
-                    screenUpdate.task_done()
+    #with concurrent.futures.ProcessPoolExecutor() as executor:
+    run = True
 
-                    pygame.display.update()
+    while run==True:
+        clock.tick(FPS)
+
+        runGenes =[]
+        for gene in genes:
+            runGenes.append(threading.Thread(target=runNext,args=gene))
+        for gene in runGenes:
+            gene.start()
+        for gene in runGenes:
+            gene.join()
+        
+        if screenUpdate.empty():
+            run=False
+            print('DONE')
+            pygame.quit()
+            
+        while not screenUpdate.empty():
+            a=screenUpdate.get()
+            print(a[1])
+            if(a[0]==1):
+                print(genes[a[2]][0].piece)
+            if(a[0]==0):
+                #reset whole map
+                mainGrid = genes[a[1]][0].getGrid()
+                for y in range(20):
+                    for x in range(10):
+                        pygame.draw.rect(display, colorID[mainGrid[x][19 - y]],
+                                         (boxSize+((a[1]%fullWidth)*boxSize*11) + (boxSize * x),
+                                            boxSize+((a[1]//fullWidth)*boxSize*21) + (boxSize * y), boxSize, boxSize))
+            else:
+                #only add new piece
+                mainGrid = genes[a[2]][0].getGrid()
+                for moves in rotations[a[1][3]][a[1][2]]:
+
+                    #
 
 
-                #if game is over, quit game
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        #run=False
 
+
+
+                    #the color id is black when it shoul dbe a color
+                    #to fix i have to make sure like 217 is corrent when indexing and also cooridate is from top right now but have to convert it to from bottom o fthe game grid
+
+
+
+
+                    #
+                    pygame.draw.rect(display, colorID[mainGrid[a[1][0]][19 - a[1][1]]],
+                                     (boxSize+((a[2]%fullWidth)*boxSize*11) + (boxSize * (a[1][0]+moves[0])), 
+                                       boxSize+((a[2]//fullWidth)*boxSize*21) + (boxSize * (a[1][1]+moves[1])), boxSize, boxSize))
+            pygame.draw.rect(display,colorID[0],[50,50,10,10])
+            screenUpdate.task_done()
+
+            pygame.display.update()
+            pygame.display.flip()
+
+        run=False
+
+
+        #if game is over, quit game
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         pygame.quit()
+        #         run=False
+
+    time.sleep(10)
 
 
 

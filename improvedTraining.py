@@ -185,7 +185,7 @@ def main():
             
         while not screenUpdate.empty():
             a=screenUpdate.get()
-            print(a[1])
+            #print(a[1])
             if(a[0]==1):
                 print(genes[a[2]][0].piece)
             if(a[0]==0):
@@ -199,31 +199,18 @@ def main():
             else:
                 #only add new piece
                 mainGrid = genes[a[2]][0].getGrid()
+                #print(mainGrid)
+                #print([a[1][0]],[a[1][1]])
                 for moves in rotations[a[1][3]][a[1][2]]:
-
-                    #
-
-
-
-
-
-                    #the color id is black when it shoul dbe a color
-                    #to fix i have to make sure like 217 is corrent when indexing and also cooridate is from top right now but have to convert it to from bottom o fthe game grid
-
-
-
-
-                    #
-                    pygame.draw.rect(display, colorID[mainGrid[a[1][0]][19 - a[1][1]]],
+                    #print(moves)
+                    pygame.draw.rect(display, colorID[mainGrid[a[1][0]][a[1][1]]],
                                      (boxSize+((a[2]%fullWidth)*boxSize*11) + (boxSize * (a[1][0]+moves[0])), 
-                                       boxSize+((a[2]//fullWidth)*boxSize*21) + (boxSize * (a[1][1]+moves[1])), boxSize, boxSize))
+                                       boxSize+((a[2]//fullWidth)*boxSize*21) + (boxSize * (19-(a[1][1]+moves[1]))), boxSize, boxSize))
             pygame.draw.rect(display,colorID[0],[50,50,10,10])
             screenUpdate.task_done()
 
             pygame.display.update()
             pygame.display.flip()
-
-        run=False
 
 
         #if game is over, quit game

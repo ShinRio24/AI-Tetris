@@ -77,12 +77,12 @@ rotations = [[
 # boxSize = 5
 fullWidth=1
 fullHeight=1
-boxSize = 50
+boxSize = 5
 
 count = fullWidth*fullHeight
 fieldWidth, fieldHeight = boxSize + (boxSize*11)*fullWidth, boxSize+(boxSize*21)*fullHeight
 #print(fieldWidth,fieldHeight)
-FPS = 5
+FPS = 20
 '''
 each block is 5 by 5 tiles
 the board is 10 by 20
@@ -127,12 +127,12 @@ def runNext(game,ind):
         tem = game.nextMove()
         #print(tem)
         if tem==-1:
-            pass
+            print('gave over, i dont know if this shoul dbe printing')
         elif tem==1:
-            screenUpdate.put_nowait([0,ind])
+            screenUpdate.put_nowait([1,ind])
             #full update the screen
         else:
-            screenUpdate.put_nowait([1,tem,ind])
+            screenUpdate.put_nowait([0,tem,ind])
 
 
 
@@ -180,15 +180,14 @@ def main():
         
         if screenUpdate.empty():
             run=False
-            print('DONE')
             pygame.quit()
             
         while not screenUpdate.empty():
             a=screenUpdate.get()
             #print(a[1])
+            if(a[0]==-1):
+                pass
             if(a[0]==1):
-                print(genes[a[2]][0].piece)
-            if(a[0]==0):
                 #reset whole map
                 mainGrid = genes[a[1]][0].getGrid()
                 for y in range(20):
@@ -206,11 +205,12 @@ def main():
                     pygame.draw.rect(display, colorID[mainGrid[a[1][0]][a[1][1]]],
                                      (boxSize+((a[2]%fullWidth)*boxSize*11) + (boxSize * (a[1][0]+moves[0])), 
                                        boxSize+((a[2]//fullWidth)*boxSize*21) + (boxSize * (19-(a[1][1]+moves[1]))), boxSize, boxSize))
-            pygame.draw.rect(display,colorID[0],[50,50,10,10])
+            #pygame.draw.rect(display,colorID[0],[50,50,10,10])
             screenUpdate.task_done()
 
             pygame.display.update()
             pygame.display.flip()
+            
 
 
         #if game is over, quit game
@@ -219,7 +219,8 @@ def main():
         #         pygame.quit()
         #         run=False
 
-    time.sleep(10)
+    print("GAME OVER")
+    time.sleep(3)
 
 
 

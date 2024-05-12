@@ -182,6 +182,8 @@ def main():
             run=False
             pygame.quit()
             
+
+            
         while not screenUpdate.empty():
             a=screenUpdate.get()
             #print(a[1])
@@ -210,7 +212,7 @@ def main():
 
             pygame.display.update()
             pygame.display.flip()
-            
+
 
 
         #if game is over, quit game

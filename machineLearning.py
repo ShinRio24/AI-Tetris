@@ -78,12 +78,32 @@ class MachineLearning:
     #sets methods to access
     def setWeight(self,a,b,c,d):
         self.weight.setWeight(a,b,c,d)
+    
+    
+    
+    def getWeight(self):
+        return self.weight
 
     def getAll(self):
-        return [self.score, self.level, self. lines]
+        return [self.score, self.level, self.lines]
 
     def getGrid(self):
         return self.grid
+    
+    def setGrid(self,a):
+        self.grid = a
+
+    #returns score of item and calcuates the score
+    def getPureScore(self):
+
+        temGrid = self.grid
+
+        holes = self.holeCounter(temGrid)
+        score = self.calcClearLines(temGrid)
+        tetrites = 4 if (score >= 4) else 0
+        bump = self.calcBump(temGrid)
+
+        return (holes * self.weight.getHoles()) + (score * self.weight.getScore()) + (tetrites * self.weight.getTetrites()) + (bump * self.weight.getBump())
 
     #returns score of item and calcuates the score
     def getScore(self,x,y,r):
@@ -125,12 +145,23 @@ class MachineLearning:
         f = [0, 40, 100, 300, 1200]
         return tem
 
+    def indCheck(self,temGrid, ind):
+        prev = 0
+        for x in range(19,-1,-1):
+            if temGrid[ind][x]!=-1:
+                prev=x
+                break
+        return prev
     #calculates bumpyness
     def calcBump(self,temGrid):
-        prev = max(temGrid[0])
+        prev = self.indCheck(temGrid,0)
+
         total =0
-        for x in range(10):
-            total+=abs(prev- max(temGrid[x]))*2
+        for y in range(10):
+            aa=self.indCheck(temGrid,y)
+            total+=abs(prev- aa)*2
+            prev =aa
+
         return total
 
     #main method

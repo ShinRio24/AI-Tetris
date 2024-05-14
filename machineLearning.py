@@ -1,5 +1,6 @@
 import random
 from weights import Weight
+import numpy as np
 
 #saves all possible rotations of blocks
 rotations = [[
@@ -73,6 +74,7 @@ class MachineLearning:
         self.lines = 0
         self.fallRate = levelDropRate[1]
         self.piece = random.randint(0, 6)
+        self.nxtPiece = random.randint(0, 6)
         self.run = True
 
     #sets methods to access
@@ -261,6 +263,7 @@ class MachineLearning:
         self.piecePlaced()
 
     def piecePlaced(self):
+        self.piece = self.nxtPiece
         self.piece = random.randint(0, 6)
 
     # game is over

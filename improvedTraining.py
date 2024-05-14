@@ -77,8 +77,8 @@ rotations = [[
 # fullWidth=23
 # fullHeight=7
 # boxSize = 5
-fullWidth=10
-fullHeight=7
+fullWidth=1
+fullHeight=1
 boxSize = 5
 
 count = fullWidth*fullHeight
@@ -263,4 +263,13 @@ PROBABLY SHOULD USE Q LEARNING ALGO
 Q LEARNING
 Q LEARNING Q LEARNING
 JUST LOOK INTO IT
+
+
+check this line in the ifPossible function of machine learning file
+if ((y == 0) or (self.grid[x+z[0]][y +z[1]- 1] != -1)):
+
+for q lerning, calculate score of move 3 moves after (just use score of board 3 moves after) so that the computer can factor in 
+the choice made knowing the next piece that is dropping
+
+
 '''

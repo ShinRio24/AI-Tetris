@@ -1,14 +1,15 @@
 import numpy as np
 
 # Define the environment
-n_states = 51380224  # Number of states in the grid world
+n_states = 7340032  # Number of states in the grid world
 #look at only the first 5 rows
 #^^ if this option dosent work
 #look at the very top open piece of each column so only 10 postiions
-#4^10 (4 max heights for all 10 cloums) * 7 (variations of next piece) *  7(variation of current piece) 
+#4^10 (4 max heights for all 10 cloums) * 7 (variations of next piece)
 #
 
-n_actions = 40  # 10 columbs and 4 rotations 
+n_actions = 40  # Number of possible actions (up, down, left, right)
+#down right rotate (make the piece start at the very top left)
 
 goal_state = 15  # Goal state
 #idk maybe 100000000? need to figure this out later

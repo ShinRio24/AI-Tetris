@@ -1,4 +1,4 @@
-from machineLearning import MachineLearning
+from scoreCalculations import MachineLearning
 from weights import Weight
 #from multiprocessing import Process
 import threading
@@ -77,8 +77,8 @@ rotations = [[
 # fullWidth=23
 # fullHeight=7
 # boxSize = 5
-fullWidth=1
-fullHeight=1
+fullWidth=23
+fullHeight=7
 boxSize = 5
 
 count = fullWidth*fullHeight

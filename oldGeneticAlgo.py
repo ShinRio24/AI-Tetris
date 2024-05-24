@@ -1,4 +1,4 @@
-from machineLearning import MachineLearning
+from scoreCalculations import MachineLearning
 from weights import Weight
 from multiprocessing import Process
 import time

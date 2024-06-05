@@ -2,6 +2,7 @@ import random
 from weights import Weight
 import numpy as np
 
+
 #saves all possible rotations of blocks
 rotations = [[
     # blue J peace

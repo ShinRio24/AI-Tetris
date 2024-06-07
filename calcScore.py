@@ -82,8 +82,6 @@ class MachineLearning:
     def setWeight(self,a,b,c,d):
         self.weight.setWeight(a,b,c,d)
     
-    
-    
     def getWeight(self):
         return self.weight
 

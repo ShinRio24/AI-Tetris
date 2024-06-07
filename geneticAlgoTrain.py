@@ -1,4 +1,4 @@
-from scoreCalculations import MachineLearning
+from calcScore import MachineLearning
 from weights import Weight
 #from multiprocessing import Process
 import threading

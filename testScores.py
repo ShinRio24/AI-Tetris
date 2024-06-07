@@ -3,7 +3,7 @@ import os
 import random
 from time import sleep
 from pygame.locals import *
-from scoreCalculations import MachineLearning
+from calcScore import MachineLearning
 from weights import Weight
 
 mainGrid = []

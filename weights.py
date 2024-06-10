@@ -34,22 +34,25 @@ class Weight:
     def getHoles(self):
         return self.holes
 
+    #getter for bumps weight
     def getBump(self):
         return self.bump
 
-
-
+    #getter for all weights
     def getAll(self):
         return [self.score,self.holes,self.bump]
 
+    #set score weight
     def setScore(self,x):
         self.score=x
         return self.score
 
+    #set holes weight
     def setHoles(self, x):
         self.holes = x
         return self.holes
 
+    #set bumps weight
     def setBump(self,x):
         self.bump=x
         return self.bump

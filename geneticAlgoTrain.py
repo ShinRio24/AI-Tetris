@@ -77,9 +77,11 @@ rotations = [[
 # fullWidth=23
 # fullHeight=7
 # boxSize = 5
-fullWidth=23
-fullHeight=7
+fullWidth=5
+fullHeight=5
 boxSize = 5
+alpha=.2
+iterations=1000
 
 count = fullWidth*fullHeight
 fieldWidth, fieldHeight = boxSize + (boxSize*11)*fullWidth, boxSize+(boxSize*21)*fullHeight
@@ -162,9 +164,9 @@ def main(doDisplay):
     genes = [[MachineLearning(Weight(a,b,c)),0,[a,b,c]]]
 
     for x in range(1,count):
-        aa= a * random.uniform(.9, 1.1)
-        bb= b * random.uniform(.9, 1.1)
-        cc= c * random.uniform(.9, 1.1)
+        aa= a * random.uniform(1-alpha, 1+alpha)
+        bb= b * random.uniform(1-alpha, 1+alpha)
+        cc= c * random.uniform(1-alpha, 1+alpha)
         genes.append([MachineLearning(Weight(aa,bb,cc)),x,[aa,bb,cc]])
     
 
@@ -244,7 +246,7 @@ def main(doDisplay):
 
 
 if __name__ == "__main__":
-    for x in range(5):main(True)
+    for x in range(iterations):main(True)
     pygame.quit()
 
 

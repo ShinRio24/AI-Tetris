@@ -99,7 +99,7 @@ class MachineLearning:
     
     def getResults(self):
 
-        temGrid = self.grid
+        temGrid = [row[:] for row in self.grid]
 
         holes = self.holeCounter(temGrid)
         score = self.lines
@@ -119,24 +119,43 @@ class MachineLearning:
             if tem==0:
                 r.append(0)
         return r
+    
+    def getHighTem(self,temGrid):
+        r=[]
+        for x in range(10):
+            tem=0
+            for y in range(19,-1,-1):
+                if(temGrid[x][y]!=-1):
+                    r.append(y+1)
+                    tem=1
+                    break
+            if tem==0:
+                r.append(0)
+        return r
 
     #returns score of item and calcuates the score
     def getPureScore(self):
 
-        temGrid = self.grid
+        temGrid = [row[:] for row in self.grid]
 
         holes = self.holeCounter(temGrid)
-        score = self.score
+        score = 0
         bump = self.calcBump(temGrid)
 
         return (holes * self.weight.getHoles()) + (score * self.weight.getScore())+ (bump * self.weight.getBump())
 
     #returns score of item and calcuates the score
-    def getScore(self,x,y,r):
+    def getScore(self,x,y,r,temGrid=[], piece = 1):
+        if temGrid==[]:
+            temGrid = [row[:] for row in self.grid]
+        if piece ==1:
+            piece =self.piece
+        else:
+            piece=self.nxtPiece
 
-        temGrid = [row[:] for row in self.grid]
-        for xx in rotations[self.piece][r]:
-            temGrid[x+xx[0]][y+xx[1]] = self.piece
+        for xx in rotations[piece][r]:
+            if ((x+xx[0])<10) and ((x+xx[0])>-1) and ((y+xx[1])<20) and ((y+xx[1])>-1):
+                temGrid[x+xx[0]][y+xx[1]] = piece
 
         holes = self.holeCounter(temGrid)
         score = self.calcClearLines(temGrid,y,r )
@@ -147,9 +166,11 @@ class MachineLearning:
     #calculates hole count
     def holeCounter(self,temGrid):
         t = 0
+        highs= self.getHighTem(temGrid)
         for x in range(10):
             c = False
-            for y in range(19, -1, -1):
+            for y in range(min(highs[x],19), -1, -1):
+                #print(x,y)
                 if (temGrid[x][y] != -1):
                     c = True
                 elif c:
@@ -182,14 +203,15 @@ class MachineLearning:
                 prev=x
                 break
         return prev
+    
     #calculates bumpyness
     def calcBump(self,temGrid):
         prev = self.indCheck(temGrid,0)
-
+        highs=self.getHighTem(temGrid)
         total =0
         for y in range(10):
-            aa=self.indCheck(temGrid,y)
-            total+=abs(prev- aa)*2
+            aa=highs[y]
+            total+=abs(prev- aa)**2
             prev =aa
 
         return total
@@ -197,32 +219,81 @@ class MachineLearning:
     #main method
     def nextMove(self):
 
-        solution=[]
         solPoint = float('-inf')
         highs=self.getHigh()
+        moveScore=float('-inf')
+
+        all=[]
         for x in range(10):
+            moveScore=float('-inf')
             for y in range(highs[x], 20):
-                if self.grid[x][y] == -1:
+                #print(len(self.grid))
+                try:
+                    if self.grid[x][y] == -1:
 
-                    for z in range(4):
-                        if self.ifPossible(x, y, z):
-                            moveScore = self.getScore(x, y, z)
+                        for z in range(4):
+                            #print(x,y,self.grid[x][y],highs[x])
+                            if self.ifPossible(x, y, z, self.grid):
+                                #print('aaa')
+                                #print(x,y,z)
+                                moveScore=self.getScore(x,y,z,[],1)
+                                all.append([moveScore,x,y,z])
 
-                            if moveScore > solPoint:
-                                solPoint = moveScore
-                                solution = [x, y, z]
-                    break
-
-        if solution  == []:
+                        if moveScore!=float('-inf'):
+                            break
+                except:
+                    print(x,y,len(self.grid[x]), len(self.grid))
+        #print(all)
+        
+        if all  == []:
             self.gameOver()
             return -1
         else:
+            all= sorted(all, key=lambda x: x[0], reverse=True)[:5]
+            nMove=float('-inf')
+            solution=[]
+
+            for x in all:
+                mn=self.next2Move(x[1],x[2],x[3])
+                #print(mn)
+                if mn>nMove:
+                    nMove=mn
+                    solution=[x[1],x[2],x[3]]
+
             solution.append(self.piece)
+            #print(solution[0],solution[1],solution[2])
             self.addPiece(solution[0],solution[1],solution[2])
             if self.checkClear(solution[1],solution[2])==1:
                 return 1
             else:
                 return solution
+    
+
+    #main method
+    def next2Move(self,ix,iy,ir):
+        temGrid =  [row[:] for row in self.grid]
+        for xx in rotations[self.piece][ir]:
+            temGrid[ix+xx[0]][iy+xx[1]] = self.piece
+
+        solution=[]
+        solPoint = float('-inf')
+        moveScore=float('-inf')
+        highs=self.getHighTem(temGrid)
+        for x in range(10):
+            for y in range(highs[x], 20):
+                if temGrid[x][y] == -1:
+
+                    for z in range(4):
+                        if self.ifPossible(x, y, z,temGrid):
+                            moveScore = self.getScore(x, y, z, temGrid,2)
+                            if moveScore > solPoint:
+                                solPoint = moveScore
+                    break
+
+        if moveScore  == float('-inf'):
+            return -1
+        else:
+            return moveScore
 
     # checks for cleared lines
     def checkClear(self,yy,r):
@@ -233,18 +304,17 @@ class MachineLearning:
         for xx in rotations[self.piece][r]:
             if (yy+xx[1]<20) and (yy+xx[1]>-1):
                 dd.add(yy+xx[1])
-        dd=list(dd)
+        dd=sorted(list(dd),reverse=True)
         for y in dd:
             c = sum(self.grid[x][y] == -1 for x in range(10))
 
             if c == 0:
                 for zz in range(10):
                     self.grid[zz].pop(y)
+                    self.grid[zz].append(-1)
                 tem += 1
 
-        for x in range(10):
-            for y in range(tem):
-                self.grid[x].append(-1)
+
 
         self.lines += tem
         f = [0, 40, 100, 300, 1200]
@@ -258,9 +328,13 @@ class MachineLearning:
     def isRun(self):
         return self.run
 
-    def ifPossible(self, x, y, r):
+    def ifPossible(self, x, y, r, grid=[]):
+        if grid==[]:
+            grid=self.grid
+
         place = True
         below = False
+        
         for z in rotations[self.piece][r]:
 
             if (x + z[0] < 0):
@@ -278,14 +352,17 @@ class MachineLearning:
             if (y + z[1] > 19):
                 place = False
                 break
-
-            if self.grid[x+z[0]][y+z[1]] != -1:
+            
+            if grid[x+z[0]][y+z[1]] != -1:
                 place = False
+                break
 
-            if ((y == 0) or (self.grid[x+z[0]][y +z[1]- 1] != -1)):
+            if ((y == 0) or (grid[x+z[0]][y +z[1]- 1] != -1)):
                 below = True
 
         return (place and below)
+    
+    
 
     # adds piece to grid
     def addPiece(self, x, y, r):

@@ -30,6 +30,7 @@ class Weight:
     def getScore(self):
         return self.score
 
+    #getter for holes gene
     def getHoles(self):
         return self.holes
 

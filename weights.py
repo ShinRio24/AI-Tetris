@@ -2,18 +2,16 @@ import random
 #methods for the genetics and weights
 class Weight:
     #initizlaised method
-    def __init__(self,a,b,c,d):
+    def __init__(self,a,b,c):
         self.score=a
         self.holes =b
         self.bump =c
-        self.tetrites=d
 
     #setter method
-    def setWeight(self,a,b,c,d):
+    def setWeight(self,a,b,c):
         self.score =a
         self.holes = b
         self.bump = c
-        self.tetrites = d
 
     #mutate just score
     def mutateScore(self,x):
@@ -27,10 +25,7 @@ class Weight:
     def mutateBump(self,x):
         self.bump*=x
         return self. bump
-    #mutate tetrites count (one cleared line)
-    def mutateTetrites(self,x):
-        self.tetrites*=x
-        return self.tetrites
+
     #getter for score
     def getScore(self):
         return self.score
@@ -41,11 +36,10 @@ class Weight:
     def getBump(self):
         return self.bump
 
-    def getTetrites(self):
-        return self.tetrites
+
 
     def getAll(self):
-        return [self.score,self.holes,self.bump,self.tetrites]
+        return [self.score,self.holes,self.bump]
 
     def setScore(self,x):
         self.score=x
@@ -58,7 +52,3 @@ class Weight:
     def setBump(self,x):
         self.bump=x
         return self.bump
-
-    def setTetrites(self,x):
-        self.tetrites=x
-        return self.tetrites

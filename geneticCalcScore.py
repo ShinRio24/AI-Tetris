@@ -102,11 +102,10 @@ class MachineLearning:
         temGrid = self.grid
 
         holes = self.holeCounter(temGrid)
-        score = self.calcClearLines(temGrid)
-        tetrites = 4 if (score >= 4) else 0
+        score = self.lines
         bump = self.calcBump(temGrid)
 
-        return [holes,score,tetrites,bump]
+        return [holes,score,bump]
 
     def getHigh(self):
         r=[]
@@ -127,11 +126,10 @@ class MachineLearning:
         temGrid = self.grid
 
         holes = self.holeCounter(temGrid)
-        score = self.calcClearLines(temGrid)
-        tetrites = 4 if (score >= 4) else 0
+        score = self.score
         bump = self.calcBump(temGrid)
 
-        return (holes * self.weight.getHoles()) + (score * self.weight.getScore()) + (tetrites * self.weight.getTetrites()) + (bump * self.weight.getBump())
+        return (holes * self.weight.getHoles()) + (score * self.weight.getScore())+ (bump * self.weight.getBump())
 
     #returns score of item and calcuates the score
     def getScore(self,x,y,r):
@@ -141,11 +139,10 @@ class MachineLearning:
             temGrid[x+xx[0]][y+xx[1]] = self.piece
 
         holes = self.holeCounter(temGrid)
-        score = self.calcClearLines(temGrid)
-        tetrites = 4 if (score == 4) else -score
+        score = self.calcClearLines(temGrid,y,r )
         bump = self.calcBump(temGrid)
 
-        return (holes * self.weight.getHoles()) + (score * self.weight.getScore()) + (tetrites * self.weight.getTetrites()) + (bump * self.weight.getBump())
+        return (holes * self.weight.getHoles()) + (score * self.weight.getScore())+ (bump * self.weight.getBump())
 
     #calculates hole count
     def holeCounter(self,temGrid):
@@ -161,17 +158,22 @@ class MachineLearning:
         return t
 
     #calculates any lines that are cleared and their derserved score
-    def calcClearLines(self,temGrid):
-        tem = 0
+    def calcClearLines(self,temGrid,yy,r):
 
-        for y in range(19, -1, -1):
+        
+        tem = 0
+        dd=set()
+        for xx in rotations[self.piece][r]:
+            dd.add(yy+xx[1])
+        dd=list(dd)
+        for y in dd:
             c = sum(temGrid[x][y] == -1 for x in range(10))
 
             if c == 0:
                 tem += 1
 
         f = [0, 40, 100, 300, 1200]
-        return tem
+        return f[tem]
 
     def indCheck(self,temGrid, ind):
         prev = 0
@@ -197,18 +199,19 @@ class MachineLearning:
 
         solution=[]
         solPoint = float('-inf')
+        highs=self.getHigh()
         for x in range(10):
-            for y in range(19, -1, -1):
-                if self.grid[x][y] != -1:
+            for y in range(highs[x], 20):
+                if self.grid[x][y] == -1:
+
+                    for z in range(4):
+                        if self.ifPossible(x, y, z):
+                            moveScore = self.getScore(x, y, z)
+
+                            if moveScore > solPoint:
+                                solPoint = moveScore
+                                solution = [x, y, z]
                     break
-
-                for z in range(4):
-                    if self.ifPossible(x, y, z):
-                        moveScore = self.getScore(x, y, z)
-
-                        if moveScore > solPoint:
-                            solPoint = moveScore
-                            solution = [x, y, z]
 
         if solution  == []:
             self.gameOver()
@@ -216,23 +219,28 @@ class MachineLearning:
         else:
             solution.append(self.piece)
             self.addPiece(solution[0],solution[1],solution[2])
-            if self.checkClear()==1:
+            if self.checkClear(solution[1],solution[2])==1:
                 return 1
             else:
                 return solution
 
     # checks for cleared lines
-    def checkClear(self):
-        tem = 0
+    def checkClear(self,yy,r):
+        
 
-        for y in range(19, -1, -1):
+        tem = 0
+        dd=set()
+        for xx in rotations[self.piece][r]:
+            if (yy+xx[1]<20) and (yy+xx[1]>-1):
+                dd.add(yy+xx[1])
+        dd=list(dd)
+        for y in dd:
             c = sum(self.grid[x][y] == -1 for x in range(10))
 
             if c == 0:
+                for zz in range(10):
+                    self.grid[zz].pop(y)
                 tem += 1
-
-                for x in range(10):
-                    self.grid[x].pop(y)
 
         for x in range(10):
             for y in range(tem):

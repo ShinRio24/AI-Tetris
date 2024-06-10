@@ -153,20 +153,19 @@ def main(doDisplay):
     #print(((os.path.join(current, 'gene.txt'))))
     with open(((os.path.join(current, 'gene.txt')))) as f:
         lines = f.readlines()
-        a,b,c,d=map(float,lines)
+        a,b,c=map(float,lines)
 
     #initializing game
     
     display.fill(pygame.Color("black"))
     #creates machien learning instance
-    genes = [[MachineLearning(Weight(a,b,c,d)),0,[a,b,c,d]]]
+    genes = [[MachineLearning(Weight(a,b,c)),0,[a,b,c]]]
 
     for x in range(1,count):
         aa= a * random.uniform(.9, 1.1)
         bb= b * random.uniform(.9, 1.1)
         cc= c * random.uniform(.9, 1.1)
-        dd= d * random.uniform(.9, 1.1)
-        genes.append([MachineLearning(Weight(aa,bb,cc,dd)),x,[aa,bb,cc,dd]])
+        genes.append([MachineLearning(Weight(aa,bb,cc)),x,[aa,bb,cc]])
     
 
     #draw the borders

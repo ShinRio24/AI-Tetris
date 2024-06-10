@@ -33,9 +33,9 @@ current = os.path.dirname(os.path.abspath(__file__))
 #print(((os.path.join(current, 'gene.txt'))))
 with open(((os.path.join(current, 'gene.txt')))) as f:
     lines = f.readlines()
-    a, b, c, d = map(float,lines)
+    a, b, c = map(float,lines)
 #creates instance of game as well as weights
-tempWeight = Weight(a,b,c,d)
+tempWeight = Weight(a,b,c)
 instance = MachineLearning(tempWeight)
 
 
@@ -120,7 +120,6 @@ def view():
         if now[0]!=0:score += (prev[0]/now[0])-1 
         if now[1]!=0:score -= (prev[1]/now[1])-1
         if now[2]!=0:score -= (prev[2]/now[2])-1
-        if now[3]!=0:score += (prev[3]/now[3])-1
         
         saves.append(situation)
         scores.append(score)
@@ -133,8 +132,8 @@ def view():
 
     #print final score
     print("Final Score: "  + str(instance.getAll()[0]))
-    print(saves)
-    print(scores)
+    #print(saves)
+    #print(scores)
 
 if __name__ == "__main__":
     view()

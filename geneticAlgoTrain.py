@@ -1,4 +1,4 @@
-from calcScore import MachineLearning
+from geneticCalcScore import MachineLearning
 from weights import Weight
 #from multiprocessing import Process
 import threading

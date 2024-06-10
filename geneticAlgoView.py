@@ -3,7 +3,7 @@ import os
 import random
 from time import sleep
 from pygame.locals import *
-from calcScore import MachineLearning
+from geneticCalcScore import MachineLearning
 from weights import Weight
 
 
@@ -85,7 +85,11 @@ def view():
     pygame.key.set_repeat(500, 100)
     #sets speed of the game
     FPS = 5
+    saves=[]
+    scores = []
     while run:
+        prev = instance.getResults()
+
         clock.tick(FPS)
         sideText = 'Hi'
         # text on side
@@ -107,6 +111,19 @@ def view():
         #updates screen
         update()
         pygame.display.update()
+        
+        
+        now=instance.getResults()
+        situation = instance.getSit()
+        #holes, score,tetrites, bump
+        score = 0
+        if now[0]!=0:score += (prev[0]/now[0])-1 
+        if now[1]!=0:score -= (prev[1]/now[1])-1
+        if now[2]!=0:score -= (prev[2]/now[2])-1
+        if now[3]!=0:score += (prev[3]/now[3])-1
+        
+        saves.append(situation)
+        scores.append(score)
 
         #if game is over, quit game
         for event in pygame.event.get():
@@ -116,6 +133,8 @@ def view():
 
     #print final score
     print("Final Score: "  + str(instance.getAll()[0]))
+    print(saves)
+    print(scores)
 
 if __name__ == "__main__":
     view()

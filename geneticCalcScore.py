@@ -85,6 +85,9 @@ class MachineLearning:
     def getWeight(self):
         return self.weight
 
+    def getSit(self):
+        return self.getHigh()+[self.piece]+[self.nxtPiece]
+
     def getAll(self):
         return [self.score, self.level, self.lines]
 
@@ -93,6 +96,30 @@ class MachineLearning:
     
     def setGrid(self,a):
         self.grid = a
+    
+    def getResults(self):
+
+        temGrid = self.grid
+
+        holes = self.holeCounter(temGrid)
+        score = self.calcClearLines(temGrid)
+        tetrites = 4 if (score >= 4) else 0
+        bump = self.calcBump(temGrid)
+
+        return [holes,score,tetrites,bump]
+
+    def getHigh(self):
+        r=[]
+        for x in range(10):
+            tem=0
+            for y in range(20):
+                if(self.grid[x][y]!=-1):
+                    r.append(y+1)
+                    tem=1
+                    break
+            if tem==0:
+                r.append(0)
+        return r
 
     #returns score of item and calcuates the score
     def getPureScore(self):

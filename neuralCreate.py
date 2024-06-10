@@ -1,15 +1,20 @@
-from numpy import loadtxt
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.models import load_model
+from keras import layers
+import numpy as np
+from keras import ops
+import keras
+from keras.utils import plot_model
+
 
 # load the dataset
-model = load_model('testModel.h5')
+inputs = keras.Input(shape=(12,))
+dense = layers.Dense(64, activation="relu")
+x = dense(inputs)
+outputs = layers.Dense(2)(x)
+model = keras.Model(inputs=inputs, outputs=outputs, name="mnist_model")
 model.summary()
 
-model = Sequential()
-model.add(Dense(12, input_shape=(8,), activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
 
-model.save("tetris.h5")
+
+model.save("tetris.keras")
+
+#to load model = keras.models.load_model("tetris.keras")

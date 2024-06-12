@@ -82,6 +82,10 @@ class MachineLearning:
     def setWeight(self,a,b,c,d):
         self.weight.setWeight(a,b,c,d)
     
+    #sets next piece
+    def setNext(self,a):
+        self.piece=a
+    
     #getter for weight
     def getWeight(self):
         return self.weight
@@ -237,15 +241,19 @@ class MachineLearning:
         moveScore=float('-inf')
         all=[]
 
-        #check every index that is open for a possible placment
+        ##check every index that is open for a possible placment
         for x in range(10):
             moveScore=float('-inf')
             for y in range(highs[x], 20):
+                
                 #if that block is empty
                 if self.grid[x][y] == -1:
+                    
                     #test all rotations of block
                     for z in range(4):
+                        
                         if self.ifPossible(x, y, z, self.grid):
+                            #rint(x,y,z)
                             moveScore=self.getScore(x,y,z,[],1)
                             all.append([moveScore,x,y,z])
 
@@ -263,15 +271,14 @@ class MachineLearning:
             solution=[]
 
             #for top 5, looking at the move after to see highest score, and doing that move
+            sn=self.getPureScore()
             for x in all:
-                mn=self.next2Move(x[1],x[2],x[3])
-                #print(mn)
+                mn=self.next2Move(x[1],x[2],x[3],x[0]-sn)
                 if mn>nMove:
                     nMove=mn
                     solution=[x[1],x[2],x[3]]
 
             solution.append(self.piece)
-            #print(solution[0],solution[1],solution[2])
             self.addPiece(solution[0],solution[1],solution[2])
             if self.checkClear(solution[1],solution[2])==1:
                 return 1
@@ -280,7 +287,7 @@ class MachineLearning:
     
 
     #main method #2, this is to calulate the second move
-    def next2Move(self,ix,iy,ir):
+    def next2Move(self,ix,iy,ir,ps):
         #create temp grid with frist move
         temGrid =  [row[:] for row in self.grid]
         for xx in rotations[self.piece][ir]:
@@ -300,7 +307,7 @@ class MachineLearning:
                     for z in range(4):
                         if self.ifPossible(x, y, z,temGrid):
                             #get scores for eacha nd store best one
-                            moveScore = self.getScore(x, y, z, temGrid,2)
+                            moveScore = self.getScore(x, y, z, temGrid,2)+ps
                             if moveScore > solPoint:
                                 solPoint = moveScore
                     break
@@ -375,9 +382,8 @@ class MachineLearning:
                 place = False
                 break
             #check if something is bleow that piece
-            if ((y == 0) or (grid[x+z[0]][y +z[1]- 1] != -1)):
+            if (((y+z[1]) == 0) or (grid[x+z[0]][y +z[1]- 1] != -1)):
                 below = True
-
         return (place and below)
     
     

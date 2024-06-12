@@ -84,7 +84,7 @@ fullHeight=5
 boxSize = 5
 #%mutation, lower this number as you have run your bot more
 alpha=.05
-iterations=100
+iterations=1
 
 count = fullWidth*fullHeight
 fieldWidth, fieldHeight = boxSize + (boxSize*11)*fullWidth, boxSize+(boxSize*21)*fullHeight
